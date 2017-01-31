@@ -10,11 +10,7 @@ var colors = {
             availableBgColors: ['#fff', '#4DD9FF', '#4BE89C', '#86FF5F', '#E8E24B', '#FFCD52']
 };
 
-var model = {
-    messageTpl : null,
-    messages: [],
-    users: {},
-};
+var socket;
 
 var users = {};
 
@@ -22,38 +18,74 @@ var clock = {
     center: 300
 };
 
-function Needle(props){
-        return(
-            <line 
-                x1={props.center + getPosition(props.angle, props.length)[0]}
-                y1={props.center + getPosition(props.angle, props.length)[1]}
-                x2={props.center}
-                y2={props.center}
-                stroke={colors.needleColor} 
-                strokeWidth={props.width}
-            />
-        );
-}
+var Message = React.createClass({
+    render() {
+        return (
+            <div className="message" id="msgtpl">
+                <img src={this.props.avatar} alt="Avatar" />
+                <div className="info">
+                    <span className="date">{this.props.h}:{this.props.m}</span>
+                    <span className="name"><strong>{this.props.username}</strong></span>
+                    <span className="messageContent">{this.props.text}</span>
+                </div>
+            </div>
+      );
+  }
+});
 
-function getPosition(teta, size){
-    return [Math.cos(teta) * size, -Math.sin(teta) * size];
-}
+var UsersList = React.createClass({
+    render() {
+        console.log(this.props.users);
+        console.log(Object.values(this.props.users));
 
+        return (
+            <div className="aside">
+                <div id="users">
+                {
+                    Object.values(this.props.users).map((user)=> {
+                        
+                        return (<img src={user.avatar} key={user.id} id={user.id} />);
+                    })
+                }
+                </div>
+            </div>
+      );
+  }
+});
+
+var MessageList = React.createClass({
+  render() {
+      return (
+          <div className='messages'>
+              <h2> Conversation: </h2>
+              {
+                  this.props.messages.map((message, i) => {
+                      return (
+                          <Message
+                              key={i}
+                              h={message.h}
+                              m={message.m}
+                              username={message.username}
+                              text={message.text}
+                          />
+                      );
+                  })
+              }
+          </div>
+      );
+  }
+});
 
 class App extends Component {
     constructor() {
         super(); // appel le constructeur du parent (ici Component)
         this.state = {
             connected : false,
-            mode: 'mechanic',
-            watchBackground: 'red'
+            messageTpl : null,
+            messages: [],
+            users: {},
         };
     }
-    componentWillMount() {
-         setInterval(this.updateNeedle.bind(this), 1000);
-        this.updateNeedle()
-    }
-
       render() {
         return (
             <div className="App">
@@ -62,9 +94,6 @@ class App extends Component {
                   <h2>Welcome to React</h2>
                 </div>
                 <div className="container">
-                    <div className="aside">
-                        <div id="users"></div>
-                    </div>
                 {
                     this.state.connected === false ? 
                        (
@@ -75,19 +104,16 @@ class App extends Component {
                             this.displayFormMessage()
                         )
                 }            
-                </div>            
-                <div className="forms">
-                    <label htmlFor="inputUpdate">Mettre à jour l'heure</label>
-                    <input type='time' ref='time' name='inputUpdate' id="inputUpdate" onClick={this.toggleMode} />
-                    <button id="updateTime" onClick={this.updateTime.bind(this)}>Mettre à jour</button>
+                <UsersList
+                    users={this.state.users}
+                />
+                <MessageList
+                    messages={this.state.messages}
+                />
                 </div>
           </div>
         );
       }
-
-    getTeta(numerator, divisor){
-        return Math.PI/2 - Math.PI* numerator/divisor;
-    }
 
     updateNeedle(date = new Date()){
         this.setState({
@@ -98,10 +124,6 @@ class App extends Component {
 
     }
 
-    getFormattedTime(){
-        // Will display time in 10:30:23 format
-        return this.state.hours + ':' + this.state.minutes + ':' + this.state.secondes;
-    }
 
     changeBgColor(){
         var randomColor = colors.availableBgColors[Math.floor(Math.random() * colors.availableBgColors.length)];
@@ -109,39 +131,19 @@ class App extends Component {
         colors.watchBackground = randomColor;
     }
 
-    updateTime(e){
-        var newDate = this.refs.time.valueAsDate;
-        this.updateNeedle(newDate);
-    }
-
-    displayMechanical(){
-        return(
-            <div id="digitalTime" className="App-digital">
-                <label htmlFor="displayAnalogic">Mode Analogique</label>
-                <input type='checkbox' name='displayAnalogic' id="displayAnalogic" onClick={()=> this.setState({mode: 'digital'})} />
-                <svg height="600" width="600">
-                    <circle cx={clock.center} cy={clock.center} r="200" stroke={colors.watchBorder} strokeWidth="30" fill={this.state.watchBackground} onClick={this.changeBgColor.bind(this)} />
-
-                    <Needle center={clock.center} angle={this.getTeta(this.state.hours, 6)} length={180} width={15} />
-                    <Needle center={clock.center} angle={this.getTeta(this.state.minutes, 30)} length={150} width={8} />
-                    <Needle center={clock.center} angle={this.getTeta(this.state.secondes, 30)} length={180} width={3} />
-
-                    <circle cx={clock.center} cy={clock.center} r="10" stroke={colors.innerCircle} strokeWidth="8" fill={this.state.watchBackground} />
-                </svg>
-            </div>
-        );
-    }
-    
-    displayDigital(){
-        return(
-        <div id="analogicTime" className="App-analogic">
-            <label htmlFor="displayMechanic">Mode Mécanique</label>
-            <input type='checkbox' name='displayMechanic' id="displayMechanic" onClick={()=> this.setState({mode: 'mechanic'})} />
-            <p>
-                {this.getFormattedTime()}
-            </p>
-        </div>
-        );
+    newUser(e){
+        e.preventDefault();
+        var login = this.refs.login.value;
+        var mail = this.refs.mail.value;
+        socket = require('socket.io-client')('http://localhost:2412');
+        this.initSocketOnLogin();
+        socket.emit('login', {
+            username : login,
+            mail : mail
+        })
+        
+        this.setState({connected: true});
+        //this.updateNeedle(login);
     }
     
     displayConnect(){
@@ -150,9 +152,9 @@ class App extends Component {
                 <h1>Bienvenue</h1>
                 <p>Ceci est un test de Chat en NodeJs, entrez votre pseudo et votre email (utilisée pour l'avatar gravatar)</p>
                 <form action="" id="loginForm">
-                    <input type="text" name="login" id="username" className="textInput" placeholder="Nom d'utilisateur" />
-                    <input type="mail" name="mail" id="mail" className="textInput" placeholder="E-mail" />
-                    <input type="submit" className="submitInput" value="Se connecter" />
+                    <input type="text" name="login" ref='login' id="username" className="textInput" placeholder="Nom d'utilisateur" />
+                    <input type="mail" name="mail" ref='mail' id="mail" className="textInput" placeholder="E-mail" />
+                    <input type="submit" className="submitInput" value="Se connecter" onClick={this.newUser.bind(this)} />
                 </form>
             </div>
         );
@@ -170,6 +172,25 @@ class App extends Component {
             </div>
         );
     }
+    
+    initSocketOnLogin(){
+        socket.on('newUsr', (user)=>{
+            console.log(user);
+            users = this.state.users;
+            users[user.id] = user;
+            this.setState({users:users})
+        });
+        socket.on('disUsr', (user)=>{
+            console.log(this.state.users);
+            delete this.state.users[user.id];
+            this.setState({users:this.state.users})
+        });
+    }
+    
+    /***
+    ** Gestion des connectés
+    **/
+    
 }
 
 export default App;

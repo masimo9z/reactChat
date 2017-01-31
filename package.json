@@ -3,11 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "MD5": "^1.3.0",
     "enzyme": "^2.7.0",
     "eslint": "^3.11.1",
     "eslint-plugin-react": "^6.8.0",
     "react-addons-test-utils": "^15.4.2",
-    "react-scripts": "0.8.3"
+    "react-scripts": "0.8.3",
+    "socket.io": "^1.7.2",
+    "socket.io-client": "^1.7.2"
   },
   "dependencies": {
     "react": "^15.4.1",
