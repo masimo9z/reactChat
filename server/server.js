@@ -9,7 +9,7 @@ httpServer.listen(2412);
 var io = require('socket.io').listen(httpServer);
 var users = {};
 var messages = [];
-var history = 5; // max de message dans lhistorique
+var history = 5;
 var me;
 
 io.sockets.on('connection', function(socket){
@@ -30,12 +30,12 @@ io.sockets.on('connection', function(socket){
         console.log(user);
         me = user;
         console.log(me);
-        me.id = user.mail.replace('@', '-').replace('.', '-');
         me.avatar = 'https://gravatar.com/avatar/'+ md5(user.mail) +'?s=50';
-        //socket.broadcast.emit('newUsr'); // envoyer seulement à tous les autres
+        me.id = user.mail.replace('@', '-').replace('.', '-');
+        console.log(me.avatar);
         socket.emit('logged');
         users[me.id] = me;
-        io.sockets.emit('newUsr', me); // envoyer à tous les autres et la page responsable aussi
+        io.sockets.emit('newUsr', me);
     });
     
     /***

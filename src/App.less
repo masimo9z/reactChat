@@ -16,31 +16,52 @@
 
 .container {
     font-family: 'Open Sans', sans-serif;
-    width: 60%;
+    width: 80%;
     margin: 0 auto;
     
     .aside {
-        width: 10%;
+        width: 20%;
         float: left;
         
-        #users img {
-            width: 80%;
-            margin: 0 auto;
-            margin-bottom: 15px;
-            height: auto;
-            border-radius: 50%;
+        #users{
+            .img-user{
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                margin-bottom: 15px;
+                
+                .img-username{
+                    color: #50514c;
+                    opacity: 0;
+                    margin-right: 10px;
+                }
+                img {
+                    width: 50px;
+                    height: auto;
+                    border-radius: 50%;
+                }
+                &:hover{
+                   .img-username{
+                        opacity: 1;
+                        transition: 1s;
+                    }
+                }
+            }
         }
     }
     .wrapper {
-        width: 90%;
+        width: 80%;
         float: right;
         border-left: 2px solid gray;
-        box-sizing: border-box;
+        box-sizing: border-box;        
+        max-height: 100vh;
+        overflow: scroll;
 
         #messages {
             padding: 10px;
         }
-        .message {            
+        .message{
+            
             img {
                 width: 5%;
                 margin-right: 3%;
@@ -51,7 +72,6 @@
             
             .info {
                 width: 60%;
-                box-shadow: -1px 2px 5px 1px rgba(0, 0, 0, 0.7);
                 margin-top: 10px;
                 margin-bottom: 10px;
                 border-radius: 10px;

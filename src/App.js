@@ -1,28 +1,15 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-
-var colors = {
-            watchBorder: '#ecf56d',
-            innerCircle: 'black',
-            innerDot: 'white',
-            needleColor: 'black',    
-            availableBgColors: ['#fff', '#4DD9FF', '#4BE89C', '#86FF5F', '#E8E24B', '#FFCD52']
-};
 
 var socket;
 
 var users = {};
 
-var clock = {
-    center: 300
-};
-
 var Message = React.createClass({
     render() {
             return (
                 <div className={this.props.isMine ? "message right-msg" : "message left-msg"} id="msgtpl">
-                {this.props.isMine ? null :<img src={this.props.avatar} alt="Avatar" />}
+                {this.props.isMine ? null : <img src={this.props.avatar} alt="Avatar" />}
                     <div className="info">
                         <span className="date">{this.props.h}:{this.props.m}</span>
                         <span className="name"><strong>{this.props.username}</strong></span>
@@ -41,8 +28,12 @@ var UsersList = React.createClass({
                 <div id="users">
                 {
                     Object.values(this.props.users).map((user)=> {
-                        
-                        return (<img src={user.avatar} key={user.id} id={user.id} />);
+                        return (
+                            <div className="img-user">
+                                <span className="img-username">{user.username}</span>
+                                <img src={user.avatar} key={user.id} id={user.id} alt={"Avatar User "+user.id} />
+                            </div>
+                        );
                     })
                 }
                 </div>
@@ -58,7 +49,6 @@ var MessageList = React.createClass({
                 <h2> Conversation: </h2>
                 {
                     Object.values(this.props.messages).map((message, i)=> {
-                    console.log('MessageListClass');
                     return (
                         <Message
                             key={i}
@@ -80,7 +70,7 @@ var MessageList = React.createClass({
 
 class App extends Component {
     constructor() {
-        super(); // appel le constructeur du parent (ici Component)
+        super();
         this.state = {
             connected : false,
             messageTpl : null,
@@ -92,10 +82,6 @@ class App extends Component {
     render() {
         return (
             <div className="App">
-                <div className="App-header">
-                  <img src={logo} className="App-logo" alt="logo" />
-                  <h2>Welcome to React</h2>
-                </div>
                 <div className="container">
                     <div className="wrapper">
                     {
@@ -121,12 +107,6 @@ class App extends Component {
         );
     }
 
-    changeBgColor(){
-        var randomColor = colors.availableBgColors[Math.floor(Math.random() * colors.availableBgColors.length)];
-        this.setState({watchBackground: randomColor});
-        colors.watchBackground = randomColor;
-    }
-
     newUser(e){
         e.preventDefault();
         var login = this.refs.login.value;
@@ -137,10 +117,7 @@ class App extends Component {
             username : login,
             mail : mail
         });
-        this.state.login = mail;
-        
-        this.setState({connected: true});
-        //this.updateNeedle(login);
+        this.setState({login: mail, connected: true});
     }
 
     newMessage(e){
@@ -149,6 +126,10 @@ class App extends Component {
         socket.emit('newMsg', {
             text : message
         })
+    }
+
+    newDiscussion(e){
+        
     }
     
     displayConnect(){
@@ -187,17 +168,10 @@ class App extends Component {
             this.setState({users:this.state.users})
         });
         socket.on('newMsg', (message)=>{
-            console.log("new message ");
-            console.log(message);
             this.setState({messages:this.state.messages.concat(message)});
             
         });
-    }
-    
-    /***
-    ** Gestion des connectés
-    **/
-    
+    }    
 }
 
 export default App;
