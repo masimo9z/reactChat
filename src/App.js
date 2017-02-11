@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
 import './App.css';
 
+// NOTATION: Cela aurait été bien d'utiliser un routeur, ou bien aussi d'écrire des tests unitaires.
+
+// NOTATION: Cela aurait été un peu plus compréhensible si tes différentes classes étaient dans des fichiers séparés
+// NOTATION: évite les variables globales (socket, users)
 var socket;
 
 var users = {};
 
 var Message = React.createClass({
     render() {
+// NOTATION: Attention : tu mets des ids sur des éléments qui ne sont pas uniques !
             return (
                 <div className={this.props.isMine ? "message right-msg" : "message left-msg"} id="msgtpl">
                 {this.props.isMine ? null : <img src={this.props.avatar} alt="Avatar" />}
@@ -21,13 +26,16 @@ var Message = React.createClass({
     }
 });
 
+// NOTATION: Tu mélanges des class ES6 avec des React.createClass, c'est assez dommage.
 var UsersList = React.createClass({
     render() {
         return (
             <div className="aside">
+// NOTATION: Pas sur que tu as besoin d'un id ici pour user (on peut toujours utiliser des classes)
                 <div id="users">
                 {
                     Object.values(this.props.users).map((user)=> {
+// NOTATION: Pas sur que tu as besoin d'un id ici pour img
                         return (
                             <div className="img-user">
                                 <span className="img-username">{user.username}</span>
@@ -49,6 +57,7 @@ var MessageList = React.createClass({
                 <h2> Conversation: </h2>
                 {
                     Object.values(this.props.messages).map((message, i)=> {
+// NOTATION: Je pense que tu pouvais directement passer tout message au message, c'est à dire message={message}
                     return (
                         <Message
                             key={i}
@@ -71,6 +80,7 @@ var MessageList = React.createClass({
 class App extends Component {
     constructor() {
         super();
+// NOTATION: messageTpl n'est jamais utilisé
         this.state = {
             connected : false,
             messageTpl : null,
@@ -78,14 +88,16 @@ class App extends Component {
             users: {},
         };
     }
-    
+
     render() {
         return (
             <div className="App">
                 <div className="container">
                     <div className="wrapper">
                     {
-                        this.state.connected === false ? 
+// NOTATION: équivalent à :
+// this.state.connected ? this.displayFormMessage() : this.displayConnect()
+                        this.state.connected === false ?
                            (
                                 this.displayConnect()
                            )
@@ -112,7 +124,7 @@ class App extends Component {
         var login = this.refs.login.value;
         var mail = this.refs.mail.value;
         socket = require('socket.io-client')('http://localhost:2412');
-        this.initSocket();        
+        this.initSocket();
         socket.emit('login', {
             username : login,
             mail : mail
@@ -128,10 +140,11 @@ class App extends Component {
         })
     }
 
+// NOTATION: Code mort ??
     newDiscussion(e){
-        
+
     }
-    
+
     displayConnect(){
         return(
             <div id="login">
@@ -156,9 +169,11 @@ class App extends Component {
             </div>
         );
     }
-    
+
     initSocket(){
         socket.on('newUsr', (user)=>{
+// NOTATION: Attention !! Tu as plusieurs variables users, c'est assez mauvais signe.
+// Je pense que le plus simple aurait été de ne pas avoir de variable global Users du tout
             users = this.state.users;
             users[user.id] = user;
             this.setState({users:users})
@@ -169,9 +184,9 @@ class App extends Component {
         });
         socket.on('newMsg', (message)=>{
             this.setState({messages:this.state.messages.concat(message)});
-            
+
         });
-    }    
+    }
 }
 
 export default App;

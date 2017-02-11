@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import sinon from 'sinon';
 import App from './App';
 import { mount } from 'enzyme';
-    
+
 it('renders without crashing', () => {
   const div = document.createElement('div');
   ReactDOM.render(<App />, div);
@@ -15,6 +15,8 @@ it('renders three needle and two circles', () => {
     expect(wrapper.find('line')).toHaveLength(3);
   });
 
+// NOTATION: Ce code n'a rien avoir avec ton projet ...
+
 it('its midnight', () => {
     const clock = sinon.useFakeTimers(new Date(2016,12,1).getTime());
     const wrapper = mount(<App />);
@@ -22,13 +24,13 @@ it('its midnight', () => {
     var needle1 = wrapper.find('line').at(0).props();
     var needle2 = wrapper.find('line').at(1).props();
     var needle3 = wrapper.find('line').at(2).props();
-    
+
     expect(parseInt(needle1.x1)).toEqual(parseInt(needle1.x2));
     expect(parseInt(needle2.x1)).toEqual(parseInt(needle2.x2));
     expect(parseInt(needle3.x1)).toEqual(parseInt(needle3.x2));
     expect(parseInt(needle1.x1)).toEqual(parseInt(needle2.x2));
     expect(parseInt(needle2.x1)).toEqual(parseInt(needle3.x2));
-    
+
     expect(parseInt(needle2.y2)).not.toEqual(parseInt(needle3.y1));
     expect(parseInt(needle2.y1)).toBeLessThan(parseInt(needle3.y2));
   });
@@ -40,7 +42,7 @@ it('its 6clock', () => {
     var needle1 = wrapper.find('line').at(0).props();
     var needle2 = wrapper.find('line').at(1).props();
     var needle3 = wrapper.find('line').at(2).props();
-    
+
     expect(parseInt(needle1.x1)).toEqual(parseInt(needle1.x2));
     expect(parseInt(needle2.x1)).toEqual(parseInt(needle2.x2));
     expect(parseInt(needle3.x1)).toEqual(parseInt(needle3.x2));

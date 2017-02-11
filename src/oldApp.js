@@ -1,3 +1,4 @@
+// NOTATION: Ce code n'a rien avoir avec ton projet
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
@@ -6,7 +7,7 @@ var colors = {
             watchBorder: '#ecf56d',
             innerCircle: 'black',
             innerDot: 'white',
-            needleColor: 'black',    
+            needleColor: 'black',
             availableBgColors: ['#fff', '#4DD9FF', '#4BE89C', '#86FF5F', '#E8E24B', '#FFCD52']
 };
 
@@ -16,12 +17,12 @@ var clock = {
 
 function Needle(props){
         return(
-            <line 
+            <line
                 x1={props.center + getPosition(props.angle, props.length)[0]}
                 y1={props.center + getPosition(props.angle, props.length)[1]}
                 x2={props.center}
                 y2={props.center}
-                stroke={colors.needleColor} 
+                stroke={colors.needleColor}
                 strokeWidth={props.width}
             />
         );
@@ -52,15 +53,15 @@ class App extends Component {
               <img src={logo} className="App-logo" alt="logo" />
               <h2>Welcome to React</h2>
             </div>
-            
-            
+
+
             <div className="forms">
                 <label htmlFor="inputUpdate">Mettre à jour l'heure</label>
                 <input type='time' ref='time' name='inputUpdate' id="inputUpdate" onClick={this.toggleMode} />
                 <button id="updateTime" onClick={this.updateTime.bind(this)}>Mettre à jour</button>
             </div>
                 {
-                    this.state.mode === 'digital' ? 
+                    this.state.mode === 'digital' ?
                        (
                             this.displayDigital()
                        )
@@ -68,7 +69,7 @@ class App extends Component {
                         (
                             this.displayMechanical()
                         )
-                }            
+                }
           </div>
         );
       }
@@ -119,7 +120,7 @@ class App extends Component {
             </div>
         );
     }
-    
+
     displayDigital(){
         return(
         <div id="analogicTime" className="App-analogic">
