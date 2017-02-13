@@ -20,10 +20,13 @@
     margin: 0 auto;
     
     .aside {
-        width: 20%;
-        float: left;
+        width: 100%;
+        border-bottom: 2px solid #ececec;
         
         #users{
+            display: flex;
+            justify-content: space-around;
+            
             .img-user{
                 display: flex;
                 justify-content: flex-end;
@@ -32,7 +35,7 @@
                 
                 .img-username{
                     color: #50514c;
-                    opacity: 0;
+                    display: none;
                     margin-right: 10px;
                 }
                 img {
@@ -42,23 +45,19 @@
                 }
                 &:hover{
                    .img-username{
-                        opacity: 1;
-                        transition: 1s;
+                        display: block;
                     }
                 }
             }
         }
     }
     .wrapper {
-        width: 80%;
-        float: right;
-        border-left: 2px solid gray;
+        width: 100%;
         box-sizing: border-box;        
-        max-height: 100vh;
-        overflow: scroll;
 
         #messages {
             padding: 10px;
+            margin-bottom: 50px;
         }
         .message{
             
@@ -136,7 +135,37 @@
         }
         
         #messageForm {
-            float: left;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            
+            .scrollToTop{
+                position: fixed;
+                top: 80%;
+                right: 5%;
+            }
+            
+            #form{
+                .text#message{
+                    width: 80%;
+                    float: left;
+                    display: block;
+                    height: 50px;
+                    box-sizing: border-box;
+                }
+                
+                .submit#send{
+                    display: block;
+                    width: 20%;
+                    float: left;
+                    box-sizing: border-box;
+                    border: 0px;
+                    height: 50px;
+                    background: #0084ff;
+                    color: #fff;
+                }
+            }
         }
     }
     #login {

@@ -3,10 +3,15 @@ import UsersList from './UsersList.js';
 import MessageList from './MessageList.js';
 import './App.css';
 
-// NOTATION: Cela aurait été bien d'utiliser un routeur, ou bien aussi d'écrire des tests unitaires.
+var Scroll  = require('react-scroll');
 
-// NOTATION: Cela aurait été un peu plus compréhensible si tes différentes classes étaient dans des fichiers séparés
-// NOTATION: évite les variables globales (socket, users)
+var Link       = Scroll.Link;
+var Element    = Scroll.Element;
+var Events     = Scroll.Events;
+var scroll     = Scroll.animateScroll;
+var scrollSpy  = Scroll.scrollSpy;
+
+// NOTATION: Cela aurait été bien d'utiliser un routeur, ou bien aussi d'écrire des tests unitaires.
 var socket;
 
 class App extends Component {
@@ -23,18 +28,18 @@ class App extends Component {
         return (
             <div className="App">
                 <div className="container">
+                    <UsersList
+                        users={this.state.users}
+                    />
                     <div className="wrapper">
-                    {
-                        this.state.connected ? this.displayFormMessage() : this.displayConnect()
-                    }
                     <MessageList
                         messages={this.state.messages}
                         login={this.state.login}
                     />
+                    {
+                        this.state.connected ? this.displayFormMessage() : this.displayConnect()
+                    }
                     </div>
-                <UsersList
-                    users={this.state.users}
-                />
                 </div>
           </div>
         );
@@ -78,9 +83,10 @@ class App extends Component {
     displayFormMessage(){
         return(
             <div id="messageForm">
+                <a className="scrollToTop" href="#" onClick={this.scrollToTop()}><i className="fa fa-arrow-up fa-2x" aria-hidden="true"></i></a>
                 <form action="" id="form">
                     <input type="text" id="message" ref='message' className="text" />
-                    <input type="submit" id="send" className="submit" value="Envoyer mon message !" onClick={this.newMessage.bind(this)} />
+                    <button type="submit" id="send" className="submit" onClick={this.newMessage.bind(this)}><i className="fa fa-paper-plane fa-2x" aria-hidden="true"></i></button>
                 </form>
             </div>
         );
@@ -98,8 +104,16 @@ class App extends Component {
         });
         socket.on('newMsg', (message)=>{
             this.setState({messages:this.state.messages.concat(message)});
-
+            this.scrollToBottom();
         });
+    }
+    
+    scrollToBottom(){
+        scroll.scrollToBottom();
+    }
+    
+    scrollToTop(){
+        scroll.scrollToTop();
     }
     
 }
