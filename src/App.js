@@ -4,12 +4,7 @@ import MessageList from './MessageList.js';
 import './App.css';
 
 var Scroll  = require('react-scroll');
-
-var Link       = Scroll.Link;
-var Element    = Scroll.Element;
-var Events     = Scroll.Events;
 var scroll     = Scroll.animateScroll;
-var scrollSpy  = Scroll.scrollSpy;
 
 // NOTATION: Cela aurait été bien d'utiliser un routeur, ou bien aussi d'écrire des tests unitaires.
 var socket;
@@ -122,7 +117,6 @@ class App extends Component {
     scrollToTop(){
         scroll.scrollToTop();
     }
-    
 }
 
 export default App;
