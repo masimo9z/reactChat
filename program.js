@@ -1,8 +1,9 @@
+// NOTATION : Fichier à supprimer , et il y en a pas mal d'autres ...
 'use strict'; // va s'arrêter si une variable est indéfinie
 /*** Exo 1 ***/
 /*
 var user = process.argv[2];
-//console.log(`Hello, ${name}, 
+//console.log(`Hello, ${name},
 //Your name lowercased is '${name.toLowerCase()}'`);
 var message = `Hello ${user}`;
 console.log(message);
@@ -15,23 +16,23 @@ class Person {
       this.name = name;
     }
     getName() {
-      return this.name;   
+      return this.name;
     }
     setName(name) {
-      this.name = name;   
+      this.name = name;
     }
-}                       
-                        
+}
+
 var alice = new Person("alice");
 alice.getName(); // alic
-alice.setName('bob');   
-alice.getName(); // bob 
+alice.setName('bob');
+alice.getName(); // bob
 
 /*** Fin Exo 2 ***/
 
 /*** Exo 3 ***/
 /*
-class Character {         
+class Character {
     constructor(x, y) {
       this.x = x;
       this.y = y;
@@ -46,9 +47,9 @@ class Character {
     toString() {
       return "x: " + this.x + " y: " + this.y + " health: " + this.getHealth();
     }
-}       
+}
 
-class Player extends Character{          
+class Player extends Character{
     constructor(x, y, name) {
         super(x, y);
         this.name = name;
