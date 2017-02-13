@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import './App.css';
 
 var socket;
-
 var users = {};
 
 var Message = React.createClass({
