@@ -49,21 +49,26 @@ class App extends Component {
         e.preventDefault();
         var login = this.refs.login.value;
         var mail = this.refs.mail.value;
-        socket = require('socket.io-client')('http://localhost:2412');
-        this.initSocket();
-        socket.emit('login', {
-            username : login,
-            mail : mail
-        });
-        this.setState({login: mail, connected: true});
+        if(login !== '' && mail !== ''){
+            socket = require('socket.io-client')('http://localhost:2412');
+            this.initSocket();
+            socket.emit('login', {
+                username : login,
+                mail : mail
+            });
+            this.setState({login: mail, connected: true});
+        }
     }
 
     newMessage(e){
         e.preventDefault();
         var message = this.refs.message.value;
-        socket.emit('newMsg', {
-            text : message
-        })
+        if(message !== ''){
+            socket.emit('newMsg', {
+                text : message
+            })
+            this.refs.message.value = '';
+        }
     }
 
     displayConnect(){
@@ -85,7 +90,7 @@ class App extends Component {
             <div id="messageForm">
                 <a className="scrollToTop" href="#" onClick={this.scrollToTop()}><i className="fa fa-arrow-up fa-2x" aria-hidden="true"></i></a>
                 <form action="" id="form">
-                    <input type="text" id="message" ref='message' className="text" />
+                    <input type="text" id="message" ref='message' className="text" placeholder="Saisissez votre message ..."/>
                     <button type="submit" id="send" className="submit" onClick={this.newMessage.bind(this)}><i className="fa fa-paper-plane fa-2x" aria-hidden="true"></i></button>
                 </form>
             </div>
@@ -96,14 +101,16 @@ class App extends Component {
         socket.on('newUsr', (user)=>{
             var users = this.state.users;
             users[user.id] = user;
-            this.setState({users:users})
+            this.setState({users:users});
+            localStorage.setItem('users', JSON.stringify(users));
         });
         socket.on('disUsr', (user)=>{
             delete this.state.users[user.id];
-            this.setState({users:this.state.users})
+            this.setState({users:this.state.users});
         });
         socket.on('newMsg', (message)=>{
             this.setState({messages:this.state.messages.concat(message)});
+            localStorage.setItem('users', JSON.stringify(this.state.messages));
             this.scrollToBottom();
         });
     }

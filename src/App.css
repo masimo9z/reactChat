@@ -52,6 +52,9 @@
   padding: 10px;
   margin-bottom: 50px;
 }
+.container .wrapper .message {
+  text-align: left;
+}
 .container .wrapper .message img {
   width: 5%;
   margin-right: 3%;
@@ -61,6 +64,7 @@
 }
 .container .wrapper .message .info {
   width: 60%;
+  padding: 5px;
   margin-top: 10px;
   margin-bottom: 10px;
   border-radius: 10px;
@@ -90,6 +94,7 @@
   background: #f1f0f0;
 }
 .container .wrapper .message.left-msg .info .messageContent {
+  word-wrap: break-word;
   color: #000;
 }
 .container .wrapper .message.left-msg .date {
